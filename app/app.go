@@ -1,13 +1,28 @@
 package app
 
-type App struct {
+import (
+	ssmtp "github.com/Team8te/go-email/app/service/smtp"
+	"github.com/emersion/go-smtp"
+)
+
+type CmdArgs struct {
+	Help bool
+	Addr string
 }
 
-func NewApp() *App {
-	return &App{}
+type App struct {
+	s *smtp.Server
+}
+
+func NewApp(args *CmdArgs) *App {
+	s := smtp.NewServer(ssmtp.NewBackend())
+	s.Addr = args.Addr
+	s.Domain = "localhost"
+	return &App{
+		s: s,
+	}
 }
 
 func (a *App) Run() error {
-	// impl here
-	return nil
+	return a.s.ListenAndServe()
 }

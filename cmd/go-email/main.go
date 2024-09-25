@@ -6,14 +6,11 @@ import (
 	"github.com/spf13/pflag"
 )
 
-type cmdArgs struct {
-	help bool
-}
-
-var args cmdArgs
+var args app.CmdArgs
 
 func init() {
-	pflag.BoolVarP(&args.help, "help", "h", false, "Show help message")
+	pflag.BoolVarP(&args.Help, "help", "h", false, "Show help message")
+	pflag.StringVar(&args.Addr, "a", "127.0.0.1:1025", "Listen address")
 	pflag.Parse()
 }
 
@@ -24,12 +21,12 @@ func main() {
 		}
 	}()
 
-	if args.help {
+	if args.Help {
 		pflag.Usage()
 		return
 	}
 
-	a := app.NewApp()
+	a := app.NewApp(&args)
 	err := a.Run()
 	if err != nil {
 		log.Errorf("App complite with error: %v", err)
